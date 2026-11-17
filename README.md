@@ -3,7 +3,7 @@
 Jogo de cruzadinha que roda no navegador para treinar os termos da aula de Tópicos de Arquitetura Computacional.
 Feito com HTML, CSS e JavaScript puros.
 
-**Site publicado:** https://pedroh-corderoc.github.io/arqcomp-cruzadinha/
+**Site publicado:** https://pedroh-corderoc.github.io/Minigame-cruzadinha/
 
 ## Como jogar
 
