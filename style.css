@@ -1,0 +1,351 @@
+
+/* ---------- Cores ---------- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #e6f4ee;
+    background-color: #07211b;
+    background-image:
+        linear-gradient(rgba(224,164,88,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224,164,88,0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+    line-height: 1.5;
+}
+
+/* ---------- Topo ---------- */
+.topo, .jogo, .rodape {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.topo {
+    padding: 30px 0 15px;
+}
+
+.selo {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #e0a458;
+    border: 1px solid #e0a458;
+    border-radius: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+h1 span {
+    color: #f2b866;
+}
+
+.intro {
+    max-width: 600px;
+    margin-top: 10px;
+    color: #9fc4b6;
+}
+
+/* ---------- Layout ---------- */
+.jogo {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 30px;
+}
+
+.painel-tabuleiro, .painel-pistas {
+    background-color: #0f3a2f;
+    border: 1px solid #1f5a49;
+    border-radius: 14px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.painel-tabuleiro {
+    flex: 1;
+}
+
+.painel-pistas {
+    flex: 1;
+}
+
+/* ---------- Barra de controles ---------- */
+.barra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #e6f4ee;
+    background-color: transparent;
+    border: 2px solid #1f5a49;
+}
+
+.btn:hover {
+    border-color: #e0a458;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primario {
+    background-color: #e0a458;
+    border-color: #e0a458;
+    color: #2b1a05;
+}
+
+.btn-primario:hover {
+    background-color: #f2b866;
+}
+
+.contador {
+    margin-left: auto;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background-color: #000000;
+    border: 1px solid #1f5a49;
+    font-family: Consolas, monospace;
+}
+
+.contador strong {
+    color: #f2b866;
+    font-size: 20px;
+}
+
+.mensagem {
+    min-height: 24px;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #9fc4b6;
+}
+
+.mensagem.vitoria {
+    color: #7fdc9c;
+    font-weight: bold;
+}
+
+/* ---------- Tabuleiro ---------- */
+.tabuleiro-wrap {
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.tabuleiro {
+    display: grid;
+    grid-template-columns: repeat(var(--colunas), 37px);
+    grid-template-rows: repeat(var(--linhas), 37px);
+    gap: 2px;
+    width: max-content;
+    margin: auto;
+}
+
+.casa {
+    position: relative;
+    background-color: #f4f1e6;
+    border-radius: 4px;
+}
+
+.casa.vazia {
+    background-color: transparent;
+}
+
+.casa input {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #10261f;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Consolas, monospace;
+    cursor: pointer;
+}
+
+.casa input:focus {
+    outline: none;
+}
+
+.casa .num {
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #6b4a1a;
+}
+
+.casa.ativa {
+    background-color: #ffe9a8;
+}
+
+.casa.foco {
+    background-color: #ffc94d;
+    box-shadow: 0 0 0 2px white inset;
+}
+
+.casa.certa {
+    background-color: #7fdc9c;
+}
+
+.casa.certa input {
+    color: #08331a;
+}
+
+.casa.errada {
+    background-color: #f4a3a3;
+}
+
+.casa.errada input {
+    color: #4a0d0d;
+}
+
+/* ---------- Legenda ---------- */
+.legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    list-style: none;
+    margin-top: 10px;
+    padding: 0;
+    font-size: 13px;
+    color: #9fc4b6;
+}
+
+.chip {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+.chip-ativa {
+    background-color: #ffe9a8;
+}
+
+.chip-certa {
+    background-color: #7fdc9c;
+}
+
+.chip-errada {
+    background-color: #f4a3a3;
+}
+
+/* ---------- Pistas ---------- */
+.painel-pistas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+h2 {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    font-size: 16px;
+    color: #e0a458;
+    border-bottom: 1px solid #1f5a49;
+}
+
+.pistas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pista button {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    text-align: left;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #e6f4ee;
+    background-color: rgba(0,0,0,0.2);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.pista button:hover {
+    border-color: #1f5a49;
+}
+
+.pista .n {
+    font-weight: bold;
+    color: #f2b866;
+}
+
+.pista .sel {
+    font-weight: bold;
+}
+
+.pista.ativa button {
+    background-color: rgba(255,233,168,0.16);
+    border-color: #ffe9a8;
+}
+
+.pista.certa button {
+    border-color: #7fdc9c;
+}
+
+.pista.certa .sel {
+    color: #7fdc9c;
+}
+
+.pista.errada button {
+    border-color: #f4a3a3;
+}
+
+.pista.errada .sel {
+    color: #f4a3a3;
+}
+
+/* ---------- Rodapé ---------- */
+.rodape {
+    padding-bottom: 30px;
+    font-size: 13px;
+    color: #9fc4b6;
+}
+
+/* ---------- Responsividade ---------- */
+@media (max-width: 960px) {
+    .jogo {
+        flex-direction: column;
+    }
+
+    .painel-tabuleiro, .painel-pistas {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .painel-pistas {
+        display: block;
+    }
+
+    .painel-pistas > div {
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+}
