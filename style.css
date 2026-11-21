@@ -1,3 +1,7 @@
+/* ---------- Geral ---------- */
+[hidden] {
+    display: none !important;
+}
 
 /* ---------- Cores ---------- */
 body {
@@ -100,6 +104,12 @@ h1 span {
     transform: translateY(1px);
 }
 
+.btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #1f5a49;
+}
+
 .btn-primario {
     background-color: #e0a458;
     border-color: #e0a458;
@@ -111,7 +121,7 @@ h1 span {
 }
 
 .contador {
-    margin-left: auto;
+    margin: 0 0 0 auto;
     padding: 8px 14px;
     border-radius: 10px;
     background-color: #000000;
@@ -124,6 +134,66 @@ h1 span {
     font-size: 20px;
 }
 
+/* ---------- Estatísticas ---------- */
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 10px;
+}
+
+.stat {
+    min-width: 90px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background-color: #000000;
+    border: 1px solid #1f5a49;
+    font-family: Consolas, monospace;
+}
+
+.stat small {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9fc4b6;
+}
+
+.stat strong {
+    font-size: 20px;
+    color: #f2b866;
+}
+
+.stat strong.urgente {
+    color: #f4a3a3;
+    animation: pisca 1s infinite;
+}
+
+@keyframes pisca {
+    50% {
+        opacity: 0.45;
+    }
+}
+
+/* ---------- Barra de progresso ---------- */
+.progresso {
+    height: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #000000;
+    border: 1px solid #1f5a49;
+}
+
+.progresso div {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #e0a458, #7fdc9c);
+    transition: width 0.4s;
+}
+
+/* ---------- Mensagens ---------- */
 .mensagem {
     min-height: 24px;
     margin: 10px 0;
@@ -131,9 +201,33 @@ h1 span {
     color: #9fc4b6;
 }
 
+.mensagem.ok {
+    color: #7fdc9c;
+    font-weight: bold;
+}
+
+.mensagem.ruim {
+    color: #f4a3a3;
+    font-weight: bold;
+}
+
 .mensagem.vitoria {
     color: #7fdc9c;
     font-weight: bold;
+}
+
+.fato {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #cfe8dc;
+    background-color: rgba(0,0,0,0.25);
+    border-left: 4px solid #e0a458;
+    border-radius: 6px;
+}
+
+.fato strong {
+    color: #f2b866;
 }
 
 /* ---------- Tabuleiro ---------- */
@@ -181,6 +275,12 @@ h1 span {
     outline: none;
 }
 
+.casa input:disabled {
+    -webkit-text-fill-color: currentColor;
+    opacity: 1;
+    cursor: default;
+}
+
 .casa .num {
     position: absolute;
     top: 1px;
@@ -188,6 +288,23 @@ h1 span {
     font-size: 10px;
     font-weight: bold;
     color: #6b4a1a;
+}
+
+/* letras travadas: inicial (fácil) e dica */
+.casa.dada {
+    background-color: #e3dcc3;
+}
+
+.casa.dada input {
+    color: #6b4a1a;
+}
+
+.casa.dica {
+    background-color: #cfe3f4;
+}
+
+.casa.dica input {
+    color: #1b4a73;
 }
 
 .casa.ativa {
@@ -213,6 +330,45 @@ h1 span {
 
 .casa.errada input {
     color: #4a0d0d;
+}
+
+/* ---------- Animações das casas ---------- */
+@keyframes pulo {
+    0% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-8px) scale(1.1);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes treme {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-4px);
+    }
+    40% {
+        transform: translateX(4px);
+    }
+    60% {
+        transform: translateX(-3px);
+    }
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+.casa.pulo {
+    animation: pulo 0.5s ease;
+}
+
+.casa.treme {
+    animation: treme 0.4s ease;
 }
 
 /* ---------- Legenda ---------- */
@@ -247,11 +403,20 @@ h1 span {
     background-color: #f4a3a3;
 }
 
+.chip-dada {
+    background-color: #e3dcc3;
+}
+
+.chip-dica {
+    background-color: #cfe3f4;
+}
+
 /* ---------- Pistas ---------- */
 .painel-pistas {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    align-content: start;
 }
 
 h2 {
@@ -318,6 +483,179 @@ h2 {
     color: #f4a3a3;
 }
 
+/* ---------- Telas por cima do jogo (modo e fim) ---------- */
+.tela {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    overflow: auto;
+    background-color: rgba(3,15,12,0.93);
+}
+
+.caixa {
+    width: 100%;
+    max-width: 920px;
+    margin: auto;
+    padding: 20px;
+    background-color: #0f3a2f;
+    border: 1px solid #1f5a49;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.titulo-caixa {
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+/* ---------- Cartões de modo ---------- */
+.modos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.modo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #e6f4ee;
+    background-color: rgba(0,0,0,0.25);
+    border: 2px solid #1f5a49;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+}
+
+.modo-card:hover {
+    transform: translateY(-3px);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modo-card ul {
+    margin: 0;
+    padding-left: 18px;
+    flex: 1;
+    color: #cfe8dc;
+}
+
+.modo-card li {
+    margin-bottom: 4px;
+}
+
+.modo-nome {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.recorde {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    color: #9fc4b6;
+}
+
+.modo-facil:hover, .modo-facil .modo-nome {
+    border-color: #7fdc9c;
+    color: #7fdc9c;
+}
+
+.modo-medio:hover, .modo-medio .modo-nome {
+    border-color: #e0a458;
+    color: #e0a458;
+}
+
+.modo-dificil:hover, .modo-dificil .modo-nome {
+    border-color: #f4a3a3;
+    color: #f4a3a3;
+}
+
+.btn-continuar {
+    margin-top: 15px;
+}
+
+/* ---------- Fim de jogo ---------- */
+.caixa-fim {
+    max-width: 520px;
+}
+
+.caixa-fim h3 {
+    margin: 15px 0 8px;
+    font-size: 15px;
+    color: #e0a458;
+}
+
+.fim-stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fim-stats li {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 6px 0;
+    border-bottom: 1px solid #1f5a49;
+    font-size: 14px;
+}
+
+.fim-stats span {
+    color: #9fc4b6;
+}
+
+.fim-stats strong {
+    text-align: right;
+    color: #f2b866;
+}
+
+.fim-ranking {
+    margin: 0;
+    padding-left: 22px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    color: #cfe8dc;
+}
+
+.fim-ranking li.novo {
+    color: #7fdc9c;
+    font-weight: bold;
+}
+
+.fim-aviso {
+    min-height: 20px;
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: #7fdc9c;
+}
+
+.fim-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* ---------- Confete ---------- */
+#confete {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    pointer-events: none;
+}
+
 /* ---------- Rodapé ---------- */
 .rodape {
     padding-bottom: 30px;
@@ -333,6 +671,11 @@ h2 {
 
     .painel-tabuleiro, .painel-pistas {
         width: 100%;
+        box-sizing: border-box;
+    }
+
+    .modos {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -347,5 +690,19 @@ h2 {
 
     h1 {
         font-size: 28px;
+    }
+
+    .contador {
+        margin-left: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .casa.pulo, .casa.treme, .stat strong.urgente {
+        animation: none;
+    }
+
+    .modo-card:hover {
+        transform: none;
     }
 }

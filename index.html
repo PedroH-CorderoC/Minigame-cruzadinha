@@ -11,27 +11,47 @@
   <header class="topo">
     <p class="selo">Arquitetura Computacional · Sprint 3</p>
     <h1>Cruzadinha de <span>Arquitetura Computacional</span></h1>
-    <p class="intro">Leia as pistas, descubra os 16 termos e digite as letras direto nas casas.
-      Clique numa casa para escolher a palavra; clique de novo (ou use a barra de espaço) para trocar entre horizontal e vertical.</p>
+    <p class="intro">Escolha um modo, leia as pistas, descubra os 16 termos e digite as letras direto nas casas.
+      Clique numa casa para escolher a palavra; clique de novo (ou use a barra de espaço) para trocar entre horizontal e vertical.
+      As setas do teclado movem entre as casas.</p>
   </header>
 
   <main class="jogo">
     <section class="painel-tabuleiro" aria-label="Tabuleiro">
       <div class="barra">
         <button id="btn-conferir" type="button" class="btn btn-primario">Conferir</button>
+        <button id="btn-dica" type="button" class="btn">💡 Dica (0)</button>
+        <button id="btn-revelar" type="button" class="btn">👁 Revelar palavra</button>
         <button id="btn-reiniciar" type="button" class="btn">Reiniciar</button>
+        <button id="btn-modos" type="button" class="btn">Trocar modo</button>
+        <button id="btn-som" type="button" class="btn">🔊 Som ligado</button>
         <p id="contador" class="contador" role="status" aria-live="polite">
           <strong>0</strong> de <span id="total">16</span> palavras
         </p>
       </div>
+
+      <div class="stats">
+        <div class="stat"><small>Modo</small><strong id="modo-atual">—</strong></div>
+        <div class="stat"><small id="rotulo-tempo">Tempo</small><strong id="tempo">00:00</strong></div>
+        <div class="stat"><small>Pontos</small><strong id="pontos">0</strong></div>
+        <div class="stat"><small>Combo</small><strong id="combo">x0</strong></div>
+      </div>
+
+      <div class="progresso" aria-hidden="true"><div id="barra-progresso"></div></div>
+
       <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+      <p id="fato" class="fato" hidden></p>
+
       <div class="tabuleiro-wrap">
         <div id="tabuleiro" class="tabuleiro" role="grid" aria-label="Tabuleiro da cruzadinha"></div>
       </div>
+
       <ul class="legenda" aria-hidden="true">
         <li><i class="chip chip-ativa"></i> palavra selecionada</li>
         <li><i class="chip chip-certa"></i> certa</li>
         <li><i class="chip chip-errada"></i> errada</li>
+        <li><i class="chip chip-dada"></i> letra inicial</li>
+        <li><i class="chip chip-dica"></i> dica</li>
       </ul>
     </section>
 
@@ -50,6 +70,73 @@
   <footer class="rodape">
     <p>Projeto da disciplina de Arquitetura Computacional · HTML, CSS e JavaScript puros.</p>
   </footer>
+
+  <!-- Tela de escolha do modo -->
+  <div id="tela-modos" class="tela" role="dialog" aria-modal="true" aria-labelledby="titulo-modos">
+    <div class="caixa">
+      <h2 id="titulo-modos" class="titulo-caixa">Escolha o modo de jogo</h2>
+      <div class="modos">
+        <button type="button" class="modo-card modo-facil" data-modo="facil">
+          <span class="modo-nome">Fácil</span>
+          <ul>
+            <li>Primeira letra de cada palavra já preenchida</li>
+            <li>5 dicas (-5 pontos cada)</li>
+            <li>Correção automática de certas e erradas</li>
+            <li>Sem limite de tempo</li>
+            <li>Pontos x1</li>
+          </ul>
+          <span class="recorde" id="recorde-facil">Recorde: —</span>
+        </button>
+
+        <button type="button" class="modo-card modo-medio" data-modo="medio">
+          <span class="modo-nome">Médio</span>
+          <ul>
+            <li>Todas as casas vazias</li>
+            <li>3 dicas (-15 pontos cada)</li>
+            <li>Acertos aparecem sozinhos; erros só no Conferir</li>
+            <li>Erros custam 10 pontos</li>
+            <li>Pontos x1,5</li>
+          </ul>
+          <span class="recorde" id="recorde-medio">Recorde: —</span>
+        </button>
+
+        <button type="button" class="modo-card modo-dificil" data-modo="dificil">
+          <span class="modo-nome">Difícil</span>
+          <ul>
+            <li>15 minutos no relógio, +20 s por palavra certa</li>
+            <li>Apenas 1 dica (-30 pontos e -20 s)</li>
+            <li>Sem correção automática: só no Conferir</li>
+            <li>Erros custam 20 pontos e 15 s</li>
+            <li>Pistas sem o número de letras · pontos x2</li>
+          </ul>
+          <span class="recorde" id="recorde-dificil">Recorde: —</span>
+        </button>
+      </div>
+
+      <button type="button" id="btn-continuar" class="btn btn-primario btn-continuar" hidden>▶ Continuar jogo salvo</button>
+    </div>
+  </div>
+
+  <!-- Tela de fim de jogo -->
+  <div id="modal-fim" class="tela" role="dialog" aria-modal="true" aria-labelledby="fim-titulo" hidden>
+    <div class="caixa caixa-fim">
+      <h2 id="fim-titulo" class="titulo-caixa">Fim de jogo</h2>
+      <ul id="fim-stats" class="fim-stats"></ul>
+
+      <h3>Melhores pontuações neste modo</h3>
+      <ol id="fim-ranking" class="fim-ranking"></ol>
+
+      <p id="fim-aviso" class="fim-aviso" role="status" aria-live="polite"></p>
+
+      <div class="fim-botoes">
+        <button type="button" id="btn-compartilhar" class="btn">📋 Compartilhar resultado</button>
+        <button type="button" id="btn-ver-tabuleiro" class="btn">Ver tabuleiro</button>
+        <button type="button" id="btn-jogar-de-novo" class="btn btn-primario">Jogar de novo</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confete" hidden></canvas>
 
   <script src="script.js"></script>
 </body>
