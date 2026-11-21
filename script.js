@@ -32,9 +32,10 @@ const COLUNAS = 14;
 const MODOS = {
     facil: {
         nome: "Fácil",
-        resumo: "primeira letra de cada palavra já vem preenchida, 5 dicas e correção automática.",
+        resumo: "primeira letra de cada palavra já vem preenchida, 5 dicas, 3 revelações e correção automática.",
         primeiraLetra: true,
         dicas: 5,
+        revelacoes: 3,
         tempoLimite: 0,          // 0 = sem limite (cronômetro sobe)
         bonusTempo: 0,           // segundos ganhos a cada palavra certa
         autoConferir: "todas",   // "todas" = marca certas e erradas sozinho
@@ -49,9 +50,10 @@ const MODOS = {
     },
     medio: {
         nome: "Médio",
-        resumo: "3 dicas, acertos aparecem sozinhos e erros só aparecem ao clicar em Conferir.",
+        resumo: "3 dicas, 2 revelações, acertos aparecem sozinhos e erros só aparecem ao clicar em Conferir.",
         primeiraLetra: false,
         dicas: 3,
+        revelacoes: 2,
         tempoLimite: 0,
         bonusTempo: 0,
         autoConferir: "certas",  // "certas" = só marca as certas sozinho
@@ -66,9 +68,10 @@ const MODOS = {
     },
     dificil: {
         nome: "Difícil",
-        resumo: "15 minutos no relógio (+20 s por palavra certa), 1 dica e nada de correção automática.",
+        resumo: "15 minutos no relógio (+20 s por palavra certa), 1 dica, 1 revelação e nada de correção automática.",
         primeiraLetra: false,
         dicas: 1,
+        revelacoes: 1,
         tempoLimite: 900,
         bonusTempo: 20,
         autoConferir: "nenhuma", // só marca ao clicar em Conferir
@@ -107,6 +110,7 @@ let combo = 0;
 let melhorCombo = 0;
 let dicasRestantes = 0;
 let dicasUsadas = 0;
+let revelacoesRestantes = 0;
 let reveladas = 0;
 let erros = 0;
 let decorrido = 0;
@@ -433,6 +437,16 @@ function mostrarFato(n) {
 }
 
 
+function textoBotaoRevelar() {
+
+    if (revelarConfirmando !== -1) {
+        return "⚠ Confirmar revelar";
+    }
+
+    return "👁 Revelar (" + revelacoesRestantes + ")";
+}
+
+
 function atualizarTextoDasPistas() {
 
     for (let n = 0; n < PALAVRAS.length; n++) {
@@ -472,7 +486,8 @@ function atualizarStats() {
 
     btnDica.textContent = "💡 Dica (" + dicasRestantes + ")";
     btnDica.disabled = (dicasRestantes <= 0 || jogoAtivo === false);
-    btnRevelar.disabled = (jogoAtivo === false);
+    btnRevelar.textContent = textoBotaoRevelar();
+    btnRevelar.disabled = (revelacoesRestantes <= 0 || jogoAtivo === false);
 }
 
 
@@ -1224,7 +1239,7 @@ function cancelarConfirmacao() {
 
     clearTimeout(timerConfirmar);
 
-    btnRevelar.textContent = "👁 Revelar palavra";
+    btnRevelar.textContent = textoBotaoRevelar();
 }
 
 
@@ -1247,20 +1262,25 @@ function revelar() {
         return;
     }
 
+    if (revelacoesRestantes <= 0) {
+        mostrarMensagem("Você já usou todas as revelações deste modo.", "ruim");
+        return;
+    }
+
     let aviso = "Revelar a palavra custa " + config.penalidadeRevelar + " pontos";
 
     if (config.penalidadeTempoRevelar > 0) {
         aviso = aviso + " e " + config.penalidadeTempoRevelar + " segundos";
     }
 
-    aviso = aviso + " e zera o combo. Clique em \"Confirmar revelar\" para continuar.";
+    aviso = aviso + " e zera o combo (restam " + revelacoesRestantes + " revelações). Clique em \"Confirmar revelar\" para continuar.";
 
     // confirmação dentro da página (o confirm() do navegador pode travar o teclado)
     if (revelarConfirmando !== n) {
 
         revelarConfirmando = n;
 
-        btnRevelar.textContent = "⚠ Confirmar revelar";
+        btnRevelar.textContent = textoBotaoRevelar();
         mostrarMensagem(aviso, "ruim");
 
         clearTimeout(timerConfirmar);
@@ -1292,6 +1312,7 @@ function revelar() {
     resultado[n] = "certa";
     pontuada[n] = true;
     reveladas++;
+    revelacoesRestantes--;
     combo = 0;
 
     pontos = pontos - config.penalidadeRevelar;
@@ -1587,6 +1608,7 @@ function iniciarJogo(id, salvo) {
     combo = 0;
     melhorCombo = 0;
     dicasRestantes = config.dicas;
+    revelacoesRestantes = config.revelacoes;
     dicasUsadas = 0;
     reveladas = 0;
     erros = 0;
@@ -1943,6 +1965,7 @@ function salvar() {
         melhorCombo: melhorCombo,
         dicasRestantes: dicasRestantes,
         dicasUsadas: dicasUsadas,
+        revelacoesRestantes: revelacoesRestantes,
         reveladas: reveladas,
         erros: erros,
         decorrido: decorrido,
@@ -2015,6 +2038,13 @@ function restaurar(d) {
     dicasRestantes = d.dicasRestantes;
     dicasUsadas = d.dicasUsadas;
     reveladas = d.reveladas;
+
+    if (d.revelacoesRestantes !== undefined) {
+        revelacoesRestantes = d.revelacoesRestantes;
+    } else {
+        revelacoesRestantes = Math.max(0, config.revelacoes - d.reveladas);
+    }
+
     erros = d.erros;
     decorrido = d.decorrido;
     restante = d.restante;
