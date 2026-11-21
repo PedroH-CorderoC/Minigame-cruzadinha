@@ -117,6 +117,9 @@ let mudo = false;
 let audioCtx = null;
 let ultimoSom = 0;
 
+let revelarConfirmando = -1;   // palavra que está esperando a confirmação do Revelar
+let timerConfirmar = null;
+
 const elTabuleiro = document.getElementById("tabuleiro");
 const elContador = document.getElementById("contador");
 const elMensagem = document.getElementById("mensagem");
@@ -1204,12 +1207,24 @@ function pedirDica() {
 
     verificarPalavrasDaCasa(alvo.linha, alvo.coluna, "auto");
 
+    focarProximaVazia(palavraAtual);
+
     pintar();
     destacar();
     atualizarStats();
     verificarVitoria();
     verificarTempo();
     salvar();
+}
+
+
+function cancelarConfirmacao() {
+
+    revelarConfirmando = -1;
+
+    clearTimeout(timerConfirmar);
+
+    btnRevelar.textContent = "👁 Revelar palavra";
 }
 
 
@@ -1238,11 +1253,23 @@ function revelar() {
         aviso = aviso + " e " + config.penalidadeTempoRevelar + " segundos";
     }
 
-    aviso = aviso + " e zera o combo. Continuar?";
+    aviso = aviso + " e zera o combo. Clique em \"Confirmar revelar\" para continuar.";
 
-    if (window.confirm(aviso) === false) {
+    // confirmação dentro da página (o confirm() do navegador pode travar o teclado)
+    if (revelarConfirmando !== n) {
+
+        revelarConfirmando = n;
+
+        btnRevelar.textContent = "⚠ Confirmar revelar";
+        mostrarMensagem(aviso, "ruim");
+
+        clearTimeout(timerConfirmar);
+        timerConfirmar = setTimeout(cancelarConfirmacao, 6000);
+
         return;
     }
+
+    cancelarConfirmacao();
 
     for (let i = 0; i < p.resposta.length; i++) {
 
@@ -1288,6 +1315,8 @@ function revelar() {
     animar(n, "pulo");
     tocar("dica");
 
+    focarProximaVazia(n);
+
     pintar();
     destacar();
     atualizarStats();
@@ -1306,6 +1335,41 @@ function travar(linha, coluna, tipo) {
     travadas[linha][coluna] = tipo;
 
     casas[linha][coluna].classList.add(tipo);
+}
+
+
+// 21b) DEPOIS DE REVELAR OU USAR DICA: IR PARA A PRÓXIMA CASA VAZIA
+
+function focarProximaVazia(n) {
+
+    let inicio = ordem.indexOf(n);
+
+    for (let k = 0; k < ordem.length; k++) {
+
+        let m = ordem[(inicio + k) % ordem.length];
+
+        if (resultado[m] === "certa") {
+            continue;
+        }
+
+        let p = PALAVRAS[m];
+
+        for (let i = 0; i < p.resposta.length; i++) {
+
+            let pos = posicao(p, i);
+
+            if (inputs[pos.linha][pos.coluna].value === "") {
+
+                palavraAtual = m;
+                casaAtual = pos;
+
+                inputs[pos.linha][pos.coluna].focus();
+                inputs[pos.linha][pos.coluna].select();
+
+                return;
+            }
+        }
+    }
 }
 
 
@@ -1536,6 +1600,7 @@ function iniciarJogo(id, salvo) {
         ultimoErro[n] = "";
     }
 
+    cancelarConfirmacao();
     atualizarTextoDasPistas();
 
     // modo fácil: a primeira letra de cada palavra já vem preenchida
